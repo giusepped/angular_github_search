@@ -15,7 +15,6 @@ githubUserSearch.controller('GitUserSearchController', ['Search', 'Users', funct
             resultsArr.push(response.data);
           })
         }
-
         self.usersData = resultsArr;
       })
   };

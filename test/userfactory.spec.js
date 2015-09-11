@@ -1,12 +1,12 @@
-describe('factory: Search', function() {
-  var search;
+describe('factory: Users', function() {
+  var user_search;
   var dummy = new Dummy();
   var access_token = dummy.access_token;
 
   beforeEach(module('GitUserSearch'));
 
-  beforeEach(inject(function(Search) {
-    search = Search;
+  beforeEach(inject(function(Users) {
+    user_search = Users;
   }));
 
   var httpBackend;
@@ -23,7 +23,7 @@ describe('factory: Search', function() {
   beforeEach(inject(function($httpBackend) {
     httpBackend = $httpBackend;
     httpBackend
-      .when("GET", "https://api.github.com/search/users?access_token=" + access_token + "&q=tansaku")
+      .when("GET", "https://api.github.com/users/tansaku?access_token=" + access_token)
       .respond(
         { items: items }
       );
@@ -33,17 +33,19 @@ describe('factory: Search', function() {
       {
         "login": "tansaku",
         "avatar_url": "https://avatars.githubusercontent.com/u/30216?v=3",
-        "html_url": "https://github.com/tansaku"
+        "html_url": "https://github.com/tansaku",
+        "followers": "197",
+        "public_repos": "238"
       },
     ];
 
   it('responds to query', function() {
-    expect(search.query).toBeDefined();
+    expect(user_search.query).toBeDefined();
   });
 
   it('returns search results', function() {
     httpBackend.flush();
-    search.query('tansaku')
+    user_search.query('https://api.github.com/users/tansaku')
       .then(function(response) {
         expect(response.data.items).toEqual(items)
       })

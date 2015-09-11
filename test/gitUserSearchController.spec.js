@@ -1,55 +1,79 @@
-// describe('GitUserSearchController', function() {
-//   beforeEach(module('GitUserSearch'));
+describe('GitUserSearchController', function() {
+  beforeEach(module('GitUserSearch'));
+  var ctrl;
+  var fakeSearch;
+  var fakeUserSearch;
+  var q, scope;
+  //assign all vars needed
 
-//   var ctrl;
+  //provider must be created before inject happens
+  beforeEach(function() {
+    module(function($provide) {
+      fakeSearch = jasmine.createSpyObj('fakeSearch', ['query']);
+      fakeUserSearch = jasmine.createSpyObj('fakeUserSearch', ['query']);
+      //assign fakeSearch and fakeUserSearch to jasmine spies which have query functions
 
-//   beforeEach(inject(function($controller) {
-//     ctrl = $controller('GitUserSearchController');
-//   }));
+      $provide.factory('Search', function() {
+        return fakeSearch;
+        //create provider Search which is a fake factory - it returns fakeSearch
+      });
+      $provide.factory('Users', function() {
+        return fakeUserSearch;
+        //create provider UserSearch which is a fake factory - it returns fakeUserSearch
+      });
+    });
+  });
 
-//   it('initialises with an empty search result and term', function() {
-//     expect(ctrl.searchResult).toBeUndefined();
-//     expect(ctrl.searchTerm).toBeUndefined();
-//   });
+  //you can do multiple injects but neater to have everything in one
+  beforeEach(inject(function($q, $rootScope, $controller) {
+    scope = $rootScope; //assign scope to root scope (global)
+    ctrl = $controller('GitUserSearchController'); //controller to ctrl
+    q = $q;
+    //$q - allows you to run functions asynchronously and use their return values when they are finished.
+  }));
 
-//   describe('when searching for a user', function() {
+  describe('when searching for a user', function() {
 
-//     var httpBackend;
+    it('initialises with an empty search result and term', function() {
+      expect(ctrl.searchResult).toBeUndefined();
+      expect(ctrl.searchTerm).toBeUndefined();
+    });
 
-//     beforeEach(inject(function($httpBackend) {
-//       httpBackend = $httpBackend
-//       httpBackend
-//         .expectGET("https://api.github.com/search/users?q=hello")
-//         .respond(
-//           { items: items }
-//         );
-//     }));
+    var gitHubSearchResponse = {
+      "items" : [
+        {
+        "login": "tansaku",
+        "avatar_url": "https://avatars.githubusercontent.com/u/30216?v=3",
+        "html_url": "https://github.com/tansaku"
+        }
+      ]
+    }
 
-//     afterEach(function() {
-//       httpBackend.verifyNoOutstandingExpectation();
-//       httpBackend.verifyNoOutstandingRequest();
-//     });
+    var gitHubFakeUserData = [
+      {
+        login: "tansaku",
+        avatar_url: "https://avatars.githubusercontent.com/u/30216?v=3",
+        url: "https://api.github.com/users/tansaku",
+        html_url: "https://github.com/tansaku",
+        public_repos: 238,
+        followers: 197,
+      }
+    ]
 
-//     var items = [
-//       {
-//         "login": "tansaku",
-//         "avatar_url": "https://avatars.githubusercontent.com/u/30216?v=3",
-//         "html_url": "https://github.com/tansaku"
-//       },
-//       {
-//         "login": "stephenlloyd",
-//         "avatar_url": "https://avatars.githubusercontent.com/u/196474?v=3",
-//         "html_url": "https://github.com/stephenlloyd"
-//       }
-//     ];
+    beforeEach(function(){
+      fakeSearch.query.and.returnValue(q.when({ data: gitHubSearchResponse }));
+      //set return value of the function query
+      fakeUserSearch.query.and.returnValue(q.when({ data: gitHubFakeUserData }));
+    });
 
-//     it('displays search results', function() {
-//       ctrl.searchTerm = 'hello';
-//       ctrl.doSearch();
-//       httpBackend.flush();
-//       expect(ctrl.searchResult.items).toEqual(items);
-//     });
-//   });
+    it('displays search results', function() {
+      ctrl.searchTerm = 'tansaku';
+      ctrl.doSearch();
+      scope.$apply(); //like httpBackend.flush() - this returns the necessary response
+      expect(ctrl.usersData[0]).toEqual(gitHubFakeUserData);
+    });
+  });
 
-// });
+
+});
 

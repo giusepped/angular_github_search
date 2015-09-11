@@ -1,3 +1,4 @@
 public/bower_components
 /node_modules
 /steps
+/public/js/access_token.js
