@@ -26,10 +26,10 @@
         <button class="btn" ng-click="searchCtrl.doSearch()">Search</button>
       </form>
       <ul class="list-group">
-        <li ng-repeat="user in searchCtrl.result" class="row">
-          <div class="col-md-3"><img ng-src="{{user[1]}}&s=50">  {{user[0]}}</div>
-          <div class="col-md-3">{{user[2]}} followers</div>
-          <div class="col-md-3">{{user[3]}} public repos</div>
+        <li ng-repeat="user in searchCtrl.usersData" class="row">
+          <div class="col-md-3"><img ng-src="{{user.avatar_url}}&s=50">  <a href="{{user.html_url}}">{{user.login}}</a></div>
+          <div class="col-md-3">{{user.followers}} followers</div>
+          <div class="col-md-3">{{user.public_repos}} public repos</div>
         </li>
       </ul>
     </div>

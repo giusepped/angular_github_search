@@ -8,30 +8,16 @@ githubUserSearch.controller('GitUserSearchController', ['Search', 'Users', funct
         self.searchResult = response.data.items.slice(0,10);
 
         var resultsArr = [];
-        for(var i=0; i<3; i++){
-          var login = self.searchResult[i].login;
-          Users.query(login)
+        for(var i=0; i<self.searchResult.length; i++){
+          var queryUrl = self.searchResult[i].url;
+          Users.query(queryUrl)
           .then(function(response) {
-            var userArr = [];
-            userArr.push(response.data.login);
-            userArr.push(response.data.avatar_url);
-            userArr.push(response.data.followers);
-            userArr.push(response.data.public_repos);
-            console.log(userArr);
-            resultsArr.push(userArr);
-            console.log(resultsArr);
+            resultsArr.push(response.data);
           })
         }
 
-        self.result = resultsArr;
+        self.usersData = resultsArr;
       })
   };
-
-  // self.findUsers = function(login){
-  //   Users.query(login)
-  //     .then(function(response) {
-  //       self.result = response.data;
-  //     })
-  // };
 
 }]);
