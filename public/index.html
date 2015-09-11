@@ -24,8 +24,9 @@
       <form class="form-horizontal">
         <input type="text" ng-model="searchCtrl.searchTerm" ng-change="searchCtrl.doSearch()" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }">
         <button class="btn" ng-click="searchCtrl.doSearch()">Search</button>
+        <p class"search for" ng-show="searchCtrl.searchTerm">Search for {{searchCtrl.searchTerm}}</p>
       </form>
-      <ul class="list-group">
+      <ul class="list-group" ng-show="searchCtrl.searchTerm">
         <li ng-repeat="user in searchCtrl.usersData" class="row">
           <div class="col-md-3"><img ng-src="{{user.avatar_url}}&s=50">  <a href="{{user.html_url}}">{{user.login}}</a></div>
           <div class="col-md-3">{{user.followers}} followers</div>
